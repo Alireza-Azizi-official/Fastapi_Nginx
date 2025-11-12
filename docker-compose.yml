@@ -1,16 +1,12 @@
-version: "3.8"
 services:
   app:
     build: .
     container_name: fastapi_app
-    environment:
-      - MONGODB_URI=${MONGODB_URI}
-      - MONGODB_DB=${MONGODB_DB:-fastapi_beanie_db}
-      - JWT_SECRET=${JWT_SECRET}
+    env_file:
+      - .env
     ports:
       - "8000:8000"
-    depends_on:
-      - mongo
+    restart: always
 
   nginx:
     image: nginx:1.25-alpine
