@@ -1,18 +1,18 @@
-import certifi
 from contextlib import asynccontextmanager
+
+import certifi
+from beanie import init_beanie
 from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
-from beanie import init_beanie
-from .models import User, Item
+
 from .config import settings
+from .models import Item, User
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     client = AsyncIOMotorClient(
-        settings.MONGODB_URI,
-        tls=True,
-        tlsCAFile=certifi.where()
+        settings.MONGODB_URI, tls=True, tlsCAFile=certifi.where()
     )
     try:
         await init_beanie(

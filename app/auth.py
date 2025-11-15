@@ -8,7 +8,6 @@ from app.models import User
 
 
 def create_jwt(user_id: str):
-
     payload = {
         "sub": str(user_id),
         "exp": datetime.now(tz=timezone.utc) + timedelta(hours=2),
@@ -17,7 +16,6 @@ def create_jwt(user_id: str):
 
 
 async def get_current_user(x_access_token: str = Header(...)) -> User:
-
     try:
         payload = jwt.decode(
             x_access_token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]

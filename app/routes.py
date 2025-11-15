@@ -16,7 +16,6 @@ from app.crud import (
 from app.models import User
 from app.schemas import ItemCreate, ItemUpdate, Token, UserCreate
 
-
 router = APIRouter()
 
 
@@ -84,11 +83,14 @@ async def soft_delete_endpoint(
 
 
 @router.delete("/items/{item_id}/hard", tags=["ITEMS"])
-async def hard_delete_endpoint(item_id: str, current_user: User = Depends(require_superuser)):
+async def hard_delete_endpoint(
+    item_id: str, current_user: User = Depends(require_superuser)
+):
     ok = await hard_delete_item(item_id)
     if not ok:
-        raise HTTPException(status_code=404, detail='not found')
-    return {'hard_deleted': True}
+        raise HTTPException(status_code=404, detail="not found")
+    return {"hard_deleted": True}
+
 
 @router.post("/users/{user_id}/make_superuser", tags=["SUPERUSER"])
 async def make_superuser_endpoint(
