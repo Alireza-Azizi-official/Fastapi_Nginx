@@ -19,7 +19,7 @@ app.add_middleware(
 
 
 templates = Jinja2Templates(
-    directory=r"template\404.html"
+    directory=r"app\template"
 )
 
 
