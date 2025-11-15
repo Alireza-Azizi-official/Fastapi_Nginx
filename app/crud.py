@@ -7,21 +7,28 @@ from app.schemas import ItemCreate, ItemUpdate
 from app.utils import hash_password, verify_password
 
 
-
-async def create_user(username: str, email: str, password: str):
+async def create_user(
+    username: str, email: str, password: str, is_superuser: bool = False
+):
     if await User.find_one(User.username == username):
         raise ValueError("username already exists")
     hashed = hash_password(password)
-    user = User(username=username, email=email, hashed_password=hashed)
+    user = User(
+        username=username,
+        email=email,
+        hashed_password=hashed,
+        is_superuser=is_superuser,
+    )
     await user.insert()
+    print(f"user created: {user.username}")
     return user
 
 
 async def authenticate_user(username: str, password: str):
-    """Authenticate user by username and password"""
     user = await User.find_one(User.username == username)
     if not user or not verify_password(password, user.hashed_password):
         return None
+    print("user authenticated:", user.username)
     return user
 
 
@@ -57,16 +64,45 @@ async def soft_delete_item(item_id: str):
 
 
 async def hard_delete_item(item_id: str):
-    item = await get_item(item_id)
+    try:
+        obj_id = PydanticObjectId(item_id)
+    except Exception:
+        return None
+    item = await Item.get(obj_id)
     if not item:
         return None
     await item.delete()
     return True
 
 
-async def list_items(include_deleted: bool = False, skip: int = 0, limit: int = 50):
+async def list_items(include_deleted: bool = False):
     if include_deleted:
-        q = Item.find_all()
+        items = Item.find_all()
     else:
-        q = Item.find({"deleted": False})
-    return await q.skip(skip).limit(limit).to_list()
+        items = Item.find({"deleted": False})
+
+    items = await items.to_list()
+    if not items:
+        print("no items found")
+    else:
+        for index, item in enumerate(items):
+            print(f"{index}. {item.model_dump()}")
+    return items
+
+
+async def make_superuser(user_id: str):
+    user = await User.get(user_id)
+    if not user:
+        return None
+    await user.update({"$set": {"is_superuser": True}})
+    return user
+
+
+async def get_list_of_users():
+    users = await User.find_all().to_list()
+    if not users:
+        print("no users found")
+        return None
+    for index, user in enumerate(users):
+        print(f"{index}. {user.model_dump()}")
+    return users
