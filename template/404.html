@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Not Found</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 50px;
+            background: #f8fafc;
+            color: #1e293b;
+        }
+        h1 {
+            color: #f97316;
+            font-size: 32px;
+        }
+        a.button {
+            display: inline-block;
+            padding: 10px 16px;
+            margin-top: 20px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        a.button:hover {
+            background: #1d4ed8;
+        }
+    </style>
+</head>
+<body>
+    <h1>404 — Page Not Found</h1>
+    <p>The URL you requested does not exist:</p>
+    <strong>{{ path }}</strong>
+
+    <p>
+        <a href="/docs" class="button">Go to API Docs</a>
+    </p>
+</body>
+</html>
